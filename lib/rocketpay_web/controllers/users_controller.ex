@@ -6,18 +6,14 @@ defmodule RocketpayWeb.UsersController do
   #Vamos dizer que temos um fallback controller através do comando abaixo
   action_fallback RocketpayWeb.FallbackController
 
+
+  #with é um pattern matching também
   def create(conn, params) do
-    params
-    |> Rocketpay.create_user()
-    |> handle_response(conn)
+    with {:ok, %User{} = user} <- Rocketpay.create_user(params) do
+      conn
+      |> put_status(:created)
+      |> render("create.json", user: user)
+    end
   end
-
-  defp handle_response({:ok, %User{} = user}, conn) do
-    conn
-    |> put_status(:created)
-    |> render("create.json", user: user)
-  end
-
-    defp handle_response({:error, _result} = error, _conn), do: error
 
 end
