@@ -17,9 +17,14 @@ defmodule Rocketpay.Account do
     timestamps()
 
   end
+#este é um changeset de update
+#ao contrário do de criação, ele não inicia um com uma struct vazia, mas com uma struct já preenchida
+#assim o cast só irá fazer o cast do que muda e não do que já era existente
 
-  def changeset(params) do
-    %__MODULE__{}
+# o \\ é um argumento default que diz à função para ela iniciar com a struct preenchida,
+# mas se não houver uma struct definida, inicie como uma struct vazia
+  def changeset(struct \\ %__MODULE__{}, params) do
+    struct
     |> cast(params, @required_params)
     |> validate_required(@required_params)
     |> check_constraint(:balance, name: :balance_must_be_positive_or_zero)
